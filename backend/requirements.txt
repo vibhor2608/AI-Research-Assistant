@@ -8,6 +8,5 @@ PyMuPDF==1.24.3
 sentence-transformers==2.7.0
 faiss-cpu==1.8.0
 numpy==1.26.4
-
-
-mongodb+srv://bhavikapict27_db_user:vWWmYrQbq9T6YB30@research-assistant.onfhwvu.mongodb.net/?appName=research-assistant
+neo4j==5.14.0
+python-dotenv==1.0.0

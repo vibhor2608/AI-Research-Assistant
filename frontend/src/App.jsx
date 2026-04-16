@@ -8,6 +8,19 @@ import PaperCard from './components/PaperCard'
 import PDFUploader from './components/PDFUploader'
 import RAGChatPanel from './components/RAGChatPanel'
 import { fetchPapers, getRagStatus } from './utils/api'
+import { getKGStatus, clearKnowledgeGraph } from './utils/kg'
+function Modal({ open, title, children, onClose }) {
+  if (!open) return null
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+      <div className="bg-[#181828] rounded-2xl shadow-xl p-8 max-w-sm w-full border border-white/10">
+        <h2 className="font-bold text-lg text-white mb-3">{title}</h2>
+        <div className="text-gray-300 text-sm mb-6">{children}</div>
+        <button onClick={onClose} className="absolute top-3 right-4 text-gray-500 hover:text-gray-300"><X size={18} /></button>
+      </div>
+    </div>
+  )
+}
 
 const TABS = [
   { id: 'discover', label: 'Discover', icon: Telescope },
@@ -28,6 +41,39 @@ export default function App() {
   const [error, setError] = useState('')
   const [hasSearched, setHasSearched] = useState(false)
   const [ragStatus, setRagStatus] = useState({ index_ready: false, chunks: 0 })
+
+  // Knowledge Graph clear modal state
+  const [showKGModal, setShowKGModal] = useState(false)
+  const [kgLoading, setKgLoading] = useState(false)
+  const [kgError, setKgError] = useState('')
+
+  // On mount, check if KG has data and prompt user
+  useEffect(() => {
+    let didPrompt = false
+    getKGStatus().then(res => {
+      if (res.kg_has_data && !didPrompt) {
+        setShowKGModal(true)
+        didPrompt = true
+      }
+    })
+  }, [])
+
+  // Handler for KG clear modal
+  const handleKGClear = async (clear) => {
+    setKgError('')
+    setKgLoading(true)
+    if (clear) {
+      try {
+        await clearKnowledgeGraph()
+        setShowKGModal(false)
+      } catch (e) {
+        setKgError(e.message || 'Failed to clear knowledge graph')
+      }
+    } else {
+      setShowKGModal(false)
+    }
+    setKgLoading(false)
+  }
 
   // Poll RAG status
   useEffect(() => {
@@ -75,6 +121,30 @@ export default function App() {
 
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #0a0a0f 0%, #0f0f1a 50%, #0d0a1a 100%)' }}>
+      {/* KG Clear Modal */}
+      <Modal open={showKGModal} title="Clear Knowledge Graph?" onClose={() => setShowKGModal(false)}>
+        <div className="mb-4">
+          The knowledge graph database contains data from previous sessions.<br />
+          Would you like to <span className="text-red-400 font-semibold">clear all knowledge graph data</span>?
+        </div>
+        {kgError && <div className="text-red-400 text-xs mb-2">{kgError}</div>}
+        <div className="flex gap-3">
+          <button
+            className="btn-primary bg-red-500/80 hover:bg-red-600/90 text-white px-4 py-2 rounded-lg font-semibold"
+            onClick={() => handleKGClear(true)}
+            disabled={kgLoading}
+          >
+            {kgLoading ? 'Clearing...' : 'Yes, Clear All'}
+          </button>
+          <button
+            className="btn-primary bg-gray-700/80 hover:bg-gray-600/90 text-white px-4 py-2 rounded-lg font-semibold"
+            onClick={() => handleKGClear(false)}
+            disabled={kgLoading}
+          >
+            No, Keep Data
+          </button>
+        </div>
+      </Modal>
       {/* Background decoration */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full opacity-5"
