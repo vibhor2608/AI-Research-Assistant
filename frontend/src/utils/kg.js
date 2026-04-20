@@ -1,11 +1,11 @@
 export async function getKGStatus() {
-  const resp = await fetch('/api/kg-status')
+  const resp = await fetch('http://54.226.177.158:8000/kg-status')
   if (!resp.ok) return { enabled: false, connected: false, kg_has_data: false }
   return resp.json()
 }
 
 export async function clearKnowledgeGraph() {
-  const resp = await fetch('/api/kg-all', { method: 'DELETE' })
+  const resp = await fetch('http://54.226.177.158:8000/kg-all', { method: 'DELETE' })
   if (!resp.ok) {
     const err = await resp.json().catch(() => ({}))
     throw new Error(err.detail || 'Failed to clear knowledge graph')
