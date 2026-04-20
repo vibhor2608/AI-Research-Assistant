@@ -1,4 +1,4 @@
-const BASE_URL = 'https://7c3a-54-226-177-158.ngrok-free.app'
+const BASE_URL = 'https://0454-54-226-177-158.ngrok-free.app'
 
 export async function fetchPapers(query, limit = 10) {
   const resp = await fetch(`${BASE_URL}/papers?q=${encodeURIComponent(query)}&limit=${limit}`)
