@@ -1,4 +1,4 @@
-const BASE_URL = '/api'
+const BASE_URL = 'http://54.226.177.158:8000'
 
 export async function fetchPapers(query, limit = 10) {
   const resp = await fetch(`${BASE_URL}/papers?q=${encodeURIComponent(query)}&limit=${limit}`)
