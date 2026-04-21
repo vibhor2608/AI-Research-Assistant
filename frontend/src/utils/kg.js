@@ -1,5 +1,5 @@
 export async function getKGStatus() {
-  const resp = await fetch('https://7bab-54-226-177-158.ngrok-free.app/kg-status')
+  const resp = await fetch('https://2a15-54-226-177-158.ngrok-free.app/kg-status')
   if (!resp.ok) return { enabled: false, connected: false, kg_has_data: false }
   return resp.json()
 }
