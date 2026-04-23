@@ -1,4 +1,4 @@
-const BASE_URL = 'https://4060-54-226-177-158.ngrok-free.app'
+const BASE_URL = 'https://9d52-54-226-177-158.ngrok-free.app'
 
 const DEFAULT_HEADERS = {
   'ngrok-skip-browser-warning': 'true'
